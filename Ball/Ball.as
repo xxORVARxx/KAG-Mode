@@ -40,7 +40,8 @@ const f32 g_hit_amount_cata = 10.0f;
 
 
 
-void onInit( CBlob @ this ) {
+void onInit( CBlob @ this )
+{
   // string formatInt(int64 val, const string &in options = '', uint width = 0)
   print( "Hello From Ball!" );
   print( formatInt( this.getNetworkID(), 'l', 20 ));
@@ -67,15 +68,46 @@ void onInit( CBlob @ this ) {
 
 
 
+
 void onTick( CBlob@ this ) {
+  Vec2f vel = this.getVelocity();
+  Vec2f oldvel = this.getOldVelocity();
+  Vec2f pos = this.getPosition();
+  CMap@ map = this.getMap();
+
+  // Map size in pixels:
+  float map_right = map.tilesize*map.tilemapwidth;
+	
+  if ((oldvel.y < 0) && (vel.y > 0)) 
+    {
+      int rx = XORRandom( 20 ) - 10; 
+      int ry = XORRandom( 20 ) - 10;
+      vel.x = rx;
+      vel.y = ry;
+    }
+	
+  if (pos.x >= map_right - 5 && vel.x > 0)
+    {
+      print("right map collision detected");
+      vel.x = -oldvel.x;
+    }
+
+  if (pos.x <= 5 && vel.x < 0)
+    {
+      print("left map collision detected");
+      vel.x = -oldvel.x;
+    }  
+  this.setVelocity(vel);
+   
+
   /*
   //rock and roll mode
   if (!this.getShape().getConsts().collidable)
-    {
-      Vec2f vel = this.getVelocity();
-      f32 angle = vel.Angle();
-      Slam(this, angle, vel, this.getShape().vellen * 1.5f);
-    }
+  {
+  Vec2f vel = this.getVelocity();
+  f32 angle = vel.Angle();
+  Slam(this, angle, vel, this.getShape().vellen * 1.5f);
+  }
   */
 }
 
@@ -238,6 +270,9 @@ void onCollision( CBlob@ _this, CBlob@ blob, bool solid, Vec2f normal, Vec2f poi
 
 f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData )
 {
+ if (this is null || hitterBlob is null)
+ return 0;
+
   // Spawn A New Ball:
   CMap@ map = getMap();
   if (map !is null)
@@ -247,6 +282,8 @@ f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hit
       f32 x = borders + XORRandom( map_area );
       Vec2f spawn_pos( x, map.getLandYAtX( s32( x / map.tilesize )) * map.tilesize - (( 16.0f * 5.0f ) + XORRandom( 16 * 5 )));    
       CBlob@ new_ball = server_CreateBlob("ball");
+	  if (new_ball is null)
+	  return 0;	
       new_ball.setPosition( spawn_pos );
       print("Spawned A New Ball At: "+ xx::Get_vector_as_string( spawn_pos ) +" :)"); 
     }
@@ -265,7 +302,7 @@ f32 onHit( CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hit
     print( "Not Hit By Player?");
 
   // Arrows Kill It!:
-  if( customData == Hitters::arrow ) {
+  if( customData == Hitters::arrow || customData == Hitters::bomb_arrow || customData == Hitters::water_stun || customData == Hitters::fire ) {
     return 10;
   }
   return damage * 0.5;
