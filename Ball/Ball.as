@@ -286,7 +286,6 @@ void onCollision_or_not_xx( CBlob@ _this, CBlob@ blob, bool solid, Vec2f normal,
     return;
   //------not-a-good-place-to-be-------
 
-  
   if( solid && blob !is null )
     {
       Vec2f hitvel = _this.getOldVelocity();
@@ -334,8 +333,6 @@ void onCollision_or_not_xx( CBlob@ _this, CBlob@ blob, bool solid, Vec2f normal,
       return;
     }
 }
-
-
 
 
 
