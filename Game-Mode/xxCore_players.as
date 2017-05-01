@@ -7,12 +7,12 @@
 
 
 namespace PLAYER {
-  shared class c_Player_info
+  shared class c_Player
   {
-    Player_info() {
+    c_Player() {
       this.Setup("", 0, "");
     }
-    Player_info( string _name, int _team, string _default_config ) {
+    c_Player( string _name, int _team, string _default_config ) {
       this.Setup(_name, _team, _default_config);
     }
 
@@ -29,12 +29,12 @@ namespace PLAYER {
     }
 
     // Pure Reference Equality:
-    bool opEquals( const PLAYER::c_Player_info &in _other ) const {
+    bool opEquals( const PLAYER::c_Player&in _other ) const {
       return( this is _other );
     }
 
     // Pass Off To String's Comparision:
-    int opCmp( const PLAYER::c_Player_info &in _other ) const {
+    int opCmp( const PLAYER::c_Player&in _other ) const {
       return( m_username.opCmp( _other.m_username ));
     }
 
@@ -42,7 +42,7 @@ namespace PLAYER {
     int m_team;
     string m_blob_name;
     int m_spawns_count;
-    int m_last_Spawn_request;
+    int m_last_spawn_request;
   };
 }//PLAYER
 
