@@ -1,0 +1,60 @@
+
+
+
+// Base/Rules/CommonScripts/ PlayerInfo.as
+PlayerInfo::PlayerInfo()
+PlayerInfo::PlayerInfo(string,u8,string)
+void PlayerInfo::Setup(string,u8,string)
+void PlayerInfo::setTeam(u8)
+bool PlayerInfo::opEquals(PlayerInfo&in)
+int PlayerInfo::opCmp(PlayerInfo&in)
+
+
+
+// Base/Rules/CommonScripts/ BaseTeamInfo.as
+BaseTeamInfo::BaseTeamInfo()
+BaseTeamInfo::BaseTeamInfo(u8, string)
+void BaseTeamInfo::Reset()
+s32 getTeamSize(BaseTeamInfo@[]@, int)
+s32 getSmallestTeam(BaseTeamInfo@[]@)
+int getLargestTeam(BaseTeamInfo@[]@)
+int getTeamDifference(BaseTeamInfo@[]@)
+
+
+
+// Base/Rules/CommonScripts/ RulesCore.as
+RulesCore::RulesCore()
+RulesCore::RulesCore(CRules@,RespawnSystem@)
+RulesCore::RulesCore(bool)
+void RulesCore::Setup(CRules@,RespawnSystem@)
+void RulesCore::Update()
+void RulesCore::SetupTeams()
+void RulesCore::AddTeam(CTeam@)
+BaseTeamInfo@ RulesCore::getTeam(int)
+void RulesCore::ChangeTeamPlayerCount(int,int)
+void RulesCore::SetupPlayers()
+PlayerInfo@ RulesCore::getInfoFromName(string)
+PlayerInfo@ RulesCore::getInfoFromPlayer(CPlayer@)
+void RulesCore::AddPlayer(CPlayer@,u8,string)
+void RulesCore::RemovePlayer(CPlayer@)
+void RulesCore::ChangePlayerTeam(CPlayer@,int)
+void RulesCore::AddPlayerSpawn(CPlayer@)
+void RulesCore::onPlayerDie(CPlayer@,CPlayer@,u8)
+void RulesCore::onSetPlayer(CBlob@,CPlayer@)
+string RulesCore::filterBlobNameToSpawn(string,CPlayer@)
+void RulesCore::AddAllPlayersToSpawn()
+void RulesCore::RemovePlayerBlob(CPlayer@)
+
+
+
+// Base/Rules/CommonScripts/ RespawnSystem.as
+RespawnSystem::RespawnSystem()
+void RespawnSystem::Update()
+void RespawnSystem::AddPlayerToSpawn(CPlayer@)
+void RespawnSystem::RemovePlayerFromSpawn(CPlayer@)
+void RespawnSystem::SetCore(RulesCore@)
+CBlob@ RespawnSystem::SpawnPlayerIntoWorld(Vec2f,PlayerInfo@)
+void RespawnSystem::DoSpawnPlayer(PlayerInfo@)
+bool RespawnSystem::canSpawnPlayer(PlayerInfo@)
+Vec2f RespawnSystem::getSpawnLocation(PlayerInfo@)
+bool RespawnSystem::isSpawning(CPlayer@)
