@@ -1,63 +1,61 @@
 /*
- * Simple Rules Logic Script:
- */
-#define SERVER_ONLY
-
-
-
-void onInit( CRules@ _this ) {
-  if( ! _this.exists("default class"))
-    _this.set_string("default class", "archer");
-}
-
-
-
-void onPlayerRequestSpawn( CRules@ _this, CPlayer@ _player ) {
-  Respawn( _this, _player );
-}
-
-
-
-CBlob@ Respawn( CRules@ _this, CPlayer@ _player ) {
-  if( @_player != null ) {
-    // Remove Previous Players Blob:
-    CBlob@ blob = _player.getBlob();
-    if( @blob != null ) {
-      CBlob@ blob = _player.getBlob();
-      blob.server_SetPlayer( null );
-      blob.server_Die();
-    }
-    CBlob@ newBlob = server_CreateBlob( _this.get_string("default class"), 0, getSpawnLocation());
-    newBlob.server_SetPlayer( _player );
-    return newBlob;
-  }
-  return null;
-}
-
-
-
-Vec2f getSpawnLocation() {
-  CMap@ map = getMap();
-  if( @map != null ) {
-    f32 x = XORRandom( 2 ) == 0 ? 32.0f : map.tilemapwidth * map.tilesize - 32.0f;
-    return Vec2f( x, map.getLandYAtX( s32( x / map.tilesize )) * map.tilesize - 16.0f );
-  }
-  return Vec2f( 0, 0 );
-}
-
-
-
-/*
  *
  */
-#ifndef INCLUDED_XXCORE_RULES_AS
-#define INCLUDED_XXCORE_RULES_AS
-
-#include "xxCore_player.as";
+#include "xxCore_players.as";
 #include "xxCore_teams.as";
 
 
 
+namespace RULES {
+  shared class c_Core {
+    c_Core() {
+      error("DO NOT DO THIS! INITIALISE WITH RULES::c_Core(RULES,RESPAWNS)");
+    }
+    c_Core( CRules@ _rules, RESPAWN::c_System@ _respawns ) {
+      Setup( _rules, _respawns );
+    }
+    c_Core( bool delay_setup ) {
+      if( delay_setup == false )
+	error("xxCORE-RULES: Delayed setup used incorrectly");
+    }
+
+    void Setup( CRules@ _rules = null, RESPAWN::c_System@ _respawns = null ) {
+      @m_rules = _rules;
+      @m_respawns = _respawns;
+      if( @m_respawns != null )
+	m_respawns.Set_rules( this );
+      this.Setup_teams();
+      //this.Setup_players();------------------------------------------------------
+      //this.Add_all_players_to_spawn();--------------------------------------------
+    }
+    void Update() {
+      if( @m_respawns != null )
+	m_respawns.Update();
+    }
+
+    // Working With Teams:
+    void Setup_teams() {
+      if( m_rules.getTeamsCount() != 1 )//<-- MEMBER-FUNCTION!
+	error("xxCORE-RULES: Expected Exactly One Team!");      
+    }
+
+    
+    void Change_team_player_count( int _amount ) {
+      if( @m_humans != null )
+	m_humans.m_players_count += _amount;
+    }
+
+    CRules@ m_rules;
+    PLAYER::c_Player@[] m_players;
+    TEAMS::c_Human@ m_humans;
+    TEAMS::c_Zef@ m_zefs;
+    RESPAWN::c_System@ m_respawns;
+  };
+}//RULES
+
+
+
+/*
 shared class RulesCore
 {
 
@@ -288,10 +286,10 @@ shared class RulesCore
 
 	}
 
-	/*
-	 * Overload this to apply some filtering to what blobs
-	 * players are allowed to respawn as.
-	 */
+	
+	 // Overload this to apply some filtering to what blobs
+	 // players are allowed to respawn as.
+	 
 	string filterBlobNameToSpawn(string proposed, CPlayer@ player)
 	{
 		return proposed;
@@ -328,3 +326,4 @@ shared class RulesCore
 	}
 
 };
+*/

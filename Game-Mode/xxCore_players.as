@@ -7,8 +7,7 @@
 
 
 namespace PLAYER {
-  shared class c_Player
-  {
+  shared class c_Player {
     c_Player() {
       this.Setup("", 0, "");
     }

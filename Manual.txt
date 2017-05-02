@@ -47,14 +47,14 @@ void RulesCore::RemovePlayerBlob(CPlayer@)
 
 
 
-// Base/Rules/CommonScripts/ RespawnSystem.as
-RespawnSystem::RespawnSystem()
-void RespawnSystem::Update()
-void RespawnSystem::AddPlayerToSpawn(CPlayer@)
-void RespawnSystem::RemovePlayerFromSpawn(CPlayer@)
-void RespawnSystem::SetCore(RulesCore@)
-CBlob@ RespawnSystem::SpawnPlayerIntoWorld(Vec2f,PlayerInfo@)
-void RespawnSystem::DoSpawnPlayer(PlayerInfo@)
-bool RespawnSystem::canSpawnPlayer(PlayerInfo@)
-Vec2f RespawnSystem::getSpawnLocation(PlayerInfo@)
-bool RespawnSystem::isSpawning(CPlayer@)
+// Base/Rules/CommonScripts/ RespawnSystem.as                   // xxCore_respawn.as
+RespawnSystem::RespawnSystem()                                  RESPAWN::c_System::Respawn_system()
+void RespawnSystem::Update()                                    void RESPAWN::c_System::Update()
+void RespawnSystem::AddPlayerToSpawn(CPlayer@)                  void RESPAWN::c_System::Add_player_to_spawn(CPlayer@)
+void RespawnSystem::RemovePlayerFromSpawn(CPlayer@)             void RESPAWN::c_System::Remove_player_from_spawn(CPlayer@)
+void RespawnSystem::SetCore(RulesCore@)                         void RESPAWN::c_System::Set_rules(RULES::c_Core@)
+CBlob@ RespawnSystem::SpawnPlayerIntoWorld(Vec2f,PlayerInfo@)   CBlob@ RESPAWN::c_System::Spawn_player_into_world(Vec2f,PLAYER::c_Player@)
+void RespawnSystem::DoSpawnPlayer(PlayerInfo@)                  void RESPAWN::c_System::Do_spawn_player(PLAYER::c_Player@)
+bool RespawnSystem::canSpawnPlayer(PlayerInfo@)                 bool RESPAWN::c_System::Can_spawn_player(PLAYER::c_Player@)
+Vec2f RespawnSystem::getSpawnLocation(PlayerInfo@)              Vec2f RESPAWN::c_System::Get_spawn_location(PLAYER::c_Player@)
+bool RespawnSystem::isSpawning(CPlayer@)                        bool RESPAWN::c_System::Is_spawning(CPlayer@)
