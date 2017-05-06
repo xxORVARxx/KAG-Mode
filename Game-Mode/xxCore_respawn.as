@@ -6,14 +6,40 @@
 
 
 namespace RESPAWN {
+  const s32 g_spawnspam_limit_time = 10;
+}//RESPAWN
+
+
+
+namespace RESPAWN {
   shared class c_System {
     c_System() {
       @m_rules = null;
     }
     
     void Update() {
-      /* OVERRIDE ME */
+      TEAMS::c_Human@ team = m_rules.m_humans;
+      for( uint i = 0 ; i < team.m_spawns.length ; ++i ) {
+	PLAYER::c_Player@ p_info = team.m_spawns[i];
+	this.Update_spawn_time( p_info, i );
+	this.Do_spawn_player( p_info );
+      }//for
     }
+    void Update_spawn_time( PLAYER::c_Player@ _p_info, int _i ) {
+      if( @_p_info != null ) {
+	u8 spawn_property = 255;
+	if( _p_info.m_can_spawn_time > 0 ) {
+	  --_p_info.m_can_spawn_time;
+	  spawn_property = u8( Maths::Min( 250, ( _p_info.m_can_spawn_time / 30 )));
+	}
+	string propname = "TheAnswer spawn time " + _p_info.m_username;
+	m_rules.m_rules.set_u8( propname, spawn_property );//<-- MEMBER-FUNCTION!
+	m_rules.m_rules.SyncToPlayer( propname, getPlayerByUsername( _p_info.m_username ));//<-- 2 MEMBER-FUNCTION!
+      }
+    }
+    
+
+    
     void Add_player_to_spawn( CPlayer@ _player ) {
       /* OVERRIDE ME */
     }
@@ -22,8 +48,9 @@ namespace RESPAWN {
     }
     void Set_rules( RULES::c_Core@ _rules ) {
       @m_rules = _rules;
+      m_limit = RESPAWN::g_spawnspam_limit_time;
     }
-
+    
     // The Actual Spawn Functions:
     CBlob@ Spawn_player_into_world( Vec2f _at, PLAYER::c_Player@ _p_info ) {
       CPlayer@ player = getPlayerByUsername( _p_info.m_username );//<-- GLOBAL-FUNCTIONS!
@@ -60,80 +87,7 @@ namespace RESPAWN {
     }
 
     private RULES::c_Core@ m_rules;
+    s32 m_limit;
+    bool m_force;
   };
 }//RESPAWN
-
-
-
-/*
-shared class RespawnSystem
-{
-
-	private RulesCore@ core;
-
-  RespawnSystem() { @core = null; }
-
-  void Update() { // OVERRIDE ME  }
-
-void AddPlayerToSpawn(CPlayer@ player)  { // OVERRIDE ME  }
-
-  void RemovePlayerFromSpawn(CPlayer@ player) { // OVERRIDE ME  }
-
-  void SetCore(RulesCore@ _core) { @core = _core; }
-
-  //the actual spawn functions
-  CBlob@ SpawnPlayerIntoWorld(Vec2f at, PlayerInfo@ p_info)
-  {
-    CPlayer@ player = getPlayerByUsername(p_info.username);
-
-    if (player !is null)
-      {
-	CBlob @newBlob = server_CreateBlob(p_info.blob_name, p_info.team, at);
-	newBlob.server_SetPlayer(player);
-	player.server_setTeamNum(p_info.team);
-	return newBlob;
-      }
-
-    return null;
-  }
-
-  //suggested implementation, doesn't have to be used of course
-  void DoSpawnPlayer(PlayerInfo@ p_info)
-  {
-    if (canSpawnPlayer(p_info))
-      {
-	CPlayer@ player = getPlayerByUsername(p_info.username); // is still connected?
-
-	if (player is null)
-	  {
-	    return;
-	  }
-
-	SpawnPlayerIntoWorld(getSpawnLocation(p_info), p_info);
-	RemovePlayerFromSpawn(player);
-      }
-  }
-
-  bool canSpawnPlayer(PlayerInfo@ p_info)
-  {
-    // OVERRIDE ME 
-    return true;
-  }
-
-  Vec2f getSpawnLocation(PlayerInfo@ p_info)
-  {
-    // OVERRIDE ME 
-    return Vec2f();
-  }
-
-  
-   // Override so rulescore can re-add when appropriate
-   
-  bool isSpawning(CPlayer@ player)
-  {
-    return false;
-  }
-
-
-};
-*/
